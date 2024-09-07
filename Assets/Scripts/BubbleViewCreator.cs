@@ -33,6 +33,7 @@ namespace TestGame
 
         private void Get(BubbleView view)
         {
+            view.Get();
         }
 
         private BubbleView Create()

@@ -36,7 +36,7 @@ namespace TestGame
         private bool isWaitingAction = true;
 
         private float currentTime;
-        private readonly float checkDistanceTime = .5f;
+        private readonly float checkDistanceTime = .25f;
 
         private bool gameCompleted;
 
@@ -229,6 +229,7 @@ namespace TestGame
 
         private bool AllBubblesIsNotMoving()
         {
+            Debug.Log($"bubblePresenters count {bubblePresenters.Count}");
             foreach (var bubblePresenter in bubblePresenters)
             {
                 if (bubblePresenter.IsIfMoving())

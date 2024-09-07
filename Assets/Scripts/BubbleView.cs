@@ -7,8 +7,17 @@ namespace TestGame
     {
         public Rigidbody2D Body;
         public event Action OnClick;
-        public event Action OnBoom;
         [SerializeField] private SpriteRenderer _image;
+        [SerializeField] private ParticleSystem _particleSystem;
+        [SerializeField] private Collider2D _collider2D;
+        public ParticleStopEventMediator ParticleStopEventMediator;
+
+        public void Get()
+        {
+            _image.enabled = true;
+            _collider2D.enabled = true;
+            Body.simulated = true;
+        }
 
         private void OnMouseDown()
         {
@@ -17,7 +26,10 @@ namespace TestGame
 
         public void ShowBoom()
         {
-            OnBoom?.Invoke();   
+            _particleSystem.Play();
+            _image.enabled = false;
+            _collider2D.enabled = false;
+            Body.simulated = false;
         }
 
         public void SetColor(Color color)

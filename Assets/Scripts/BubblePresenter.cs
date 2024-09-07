@@ -12,16 +12,16 @@ namespace TestGame
         private BubbleType bubbleType;
         private BubbleViewCreator creator;
         private IGameController gameController;
-        public bool HasView;
-        public bool isMovingPrev;
+        private bool isMovingPrev;
 
+        public bool HasView => view != null && view.Body.simulated;
         private Color GetColor => bubbleType switch
         {
             BubbleType.Blue => Color.blue,
             BubbleType.Green => Color.green,
             _ => Color.red,
         };
-        
+
         public Vector2 Position => view.transform.position;
         public BubbleType BubbleType => bubbleType;
 
@@ -32,12 +32,16 @@ namespace TestGame
             bubbleType = type;
             view = creator.CreateBubble();
             view.OnClick += OnBubbleClick;
-            view.OnBoom += BoomBubble;
+            view.ParticleStopEventMediator.OnExplosionEffectStop += OnExplosionEffectStop;
             view.transform.position = position;
             view.SetColor(GetColor);
             view.gameObject.SetActive(true);
-            HasView = true;
             isMovingPrev = true;
+        }
+
+        private void OnExplosionEffectStop()
+        {
+            Remove();
         }
 
         public bool IsIfMoving()
@@ -56,13 +60,12 @@ namespace TestGame
 
         public void BoomBubble()
         {
-            HasView = false;
-            gameController.OnBubbleDestroy();
-            Remove();
+            view.ShowBoom();
         }
 
         public void Remove()
         {
+            gameController.OnBubbleDestroy();
             creator.ReleaseBubble(view);
             Dispose();
         }
@@ -78,13 +81,12 @@ namespace TestGame
         public void Dispose()
         {
             view.OnClick -= OnBubbleClick;
-            view.OnBoom -= BoomBubble;
-            view = null;
+            view.ParticleStopEventMediator.OnExplosionEffectStop -= OnExplosionEffectStop;
         }
 
         private void OnBubbleClick()
         {
-            if(_joint2D==null)
+            if (_joint2D == null)
                 return;
             _joint2D.enabled = false;
             _joint2D = null;
