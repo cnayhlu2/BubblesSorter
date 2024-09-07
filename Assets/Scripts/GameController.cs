@@ -200,12 +200,13 @@ namespace TestGame
             }
 
             int addScore = 0;
-            foreach (var index in findLines)
+            foreach (var lineIndex in findLines)
             {
-                if (helpHDictionary[checkLines[index][0]].HasView)
+                foreach (var index in checkLines[lineIndex])
                 {
-                    addScore += GetScore(helpHDictionary[checkLines[index][0]].BubbleType);
-                    helpHDictionary[checkLines[index][0]].BoomBubble();
+                    if (!helpHDictionary[checkLines[lineIndex][index]].HasView) continue;
+                    addScore += GetScore(helpHDictionary[checkLines[lineIndex][index]].BubbleType);
+                    helpHDictionary[checkLines[lineIndex][index]].BoomBubble();
                 }
             }
 

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace TestGame
 {
-    public class ScoreAdapter : MonoBehaviour
+    public class ScoreAdapter : SerializedMonoBehaviour
     {
         [SerializeField] private ScoreView view;
-        [SerializeReference] private IGameController gameController;
+        [OdinSerialize] private IGameController gameController;
 
         private int score;
 
@@ -22,17 +23,21 @@ namespace TestGame
             gameController.GameStart -= OnGameStart;
         }
 
+        [Button]
         private void OnGameStart(int value)
         {
             score = value;
             view.SetValue($"{value}");
         }
 
+        [Button]
         private void OnGameScoreUpdated(int newScore)
         {
             int addScore = newScore - score;
+            score = newScore;
             view.SetValue($"{newScore}");
-            view.ShowAddAnimation($"<color=green>+{addScore}</color>");
+            if (addScore > 0)
+                view.ShowAddAnimation($"<color=green>+{addScore}</color>");
         }
     }
 }

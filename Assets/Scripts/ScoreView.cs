@@ -29,7 +29,7 @@ namespace TestGame
             addValueLabel.text = value;
             addValueLabel.transform.position = startPosition;
 
-            addValueLabel.transform.DOMoveY(startPosition.y + 1, AddDuration).OnComplete(() => addValueLabel.gameObject.SetActive(false));
+            tweener = addValueLabel.transform.DOMoveY(startPosition.y + 100, AddDuration).OnComplete(() => addValueLabel.gameObject.SetActive(false));
             addValueLabel.gameObject.SetActive(true);
         }
     }
