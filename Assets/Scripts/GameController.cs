@@ -101,7 +101,7 @@ namespace TestGame
                 return;
             }
 
-            if (CheckBubblesForBoom())
+            if (TryRemoveBubbles())
             {
                 return;
             }
@@ -145,7 +145,7 @@ namespace TestGame
         }
 
 
-        private bool CheckBubblesForBoom()
+        private bool TryRemoveBubbles()
         {
             Dictionary<int, BubblePresenter> helpHDictionary = new();
 
@@ -168,7 +168,6 @@ namespace TestGame
                     {
                         continue;
                     }
-
                     break;
                 }
             }
@@ -191,8 +190,8 @@ namespace TestGame
 
                 if (completeLine)
                 {
-                    if (helpHDictionary[checkLines[index][0]].BubbleType == helpHDictionary[checkLines[index][1]].BubbleType &&
-                        helpHDictionary[checkLines[index][0]].BubbleType == helpHDictionary[checkLines[index][2]].BubbleType)
+                    if (helpHDictionary[checkLine[0]].BubbleType == helpHDictionary[checkLine[1]].BubbleType &&
+                        helpHDictionary[checkLine[0]].BubbleType == helpHDictionary[checkLine[2]].BubbleType)
                     {
                         findLines.Add(index);
                     }
@@ -204,9 +203,10 @@ namespace TestGame
             {
                 foreach (var index in checkLines[lineIndex])
                 {
-                    if (!helpHDictionary[checkLines[lineIndex][index]].HasView) continue;
-                    addScore += GetScore(helpHDictionary[checkLines[lineIndex][index]].BubbleType);
-                    helpHDictionary[checkLines[lineIndex][index]].BoomBubble();
+                    var bubble = helpHDictionary[index];
+                    if (!bubble.HasView) continue;
+                    addScore += GetScore(bubble.BubbleType);
+                    bubble.BoomBubble();
                 }
             }
 
@@ -242,7 +242,14 @@ namespace TestGame
 
         private void InstantiateBubble()
         {
-            var bubble = new BubblePresenter(creator, _startingPositions.GetRandomValue(), RandomEnumValue<BubbleType>(), this);
+            var bubbleType = RandomEnumValue<BubbleType>();
+
+            while (bubbleType == BubbleType.None)
+            {
+                bubbleType = RandomEnumValue<BubbleType>();
+            }
+
+            var bubble = new BubblePresenter(creator, _startingPositions.GetRandomValue(),bubbleType , this);
             bubble.ConnectToJoint(joint2D);
             bubblePresenters.Add(bubble);
         }

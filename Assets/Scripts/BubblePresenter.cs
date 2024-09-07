@@ -84,7 +84,10 @@ namespace TestGame
 
         private void OnBubbleClick()
         {
+            if(_joint2D==null)
+                return;
             _joint2D.enabled = false;
+            _joint2D = null;
         }
     }
 }
