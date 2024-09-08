@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using static TestGame.Utilities;
 
@@ -12,6 +11,7 @@ namespace TestGame
 
         public event Action<int> GameScoreUpdated;
         public event Action<int> GameStart;
+        public event Action GameHide;
 
         private int GameScore
         {
@@ -28,8 +28,9 @@ namespace TestGame
 
         [SerializeField] private BubbleViewCreator creator;
         [SerializeField] private List<Vector2> _startingPositions = new();
-
         [SerializeField] private DistanceJoint2D joint2D;
+        [SerializeField] private LoseWindowPresenter loseWindowPresenter;
+        [SerializeField] private GameObject _cup;
 
         private readonly List<BubblePresenter> bubblePresenters = new();
 
@@ -55,9 +56,9 @@ namespace TestGame
             new[] {0, 4, 8}, new[] {6, 4, 2},
         };
 
-        public void Start()
+        private void Awake()
         {
-            StartNewGame();
+            Hide();
         }
 
         public void StartNewGame()
@@ -67,9 +68,12 @@ namespace TestGame
                 bubblePresenter.Remove();
             }
 
+            bubblePresenters.Clear();
+
             isWaitingAction = false;
             gameCompleted = false;
             gameScore = 0;
+            _cup.SetActive(true);
             GameStart?.Invoke(gameScore);
         }
 
@@ -129,7 +133,7 @@ namespace TestGame
             }
             else
             {
-                if (bubblePresenters.Count > CountToLose)
+                if (bubblePresenters.Count >= CountToLose)
                 {
                     return true;
                 }
@@ -142,6 +146,7 @@ namespace TestGame
         {
             Debug.Log($"Lose conditions: {conditions}");
             gameCompleted = true;
+            loseWindowPresenter.Show(GameScore);
         }
 
 
@@ -168,6 +173,7 @@ namespace TestGame
                     {
                         continue;
                     }
+
                     break;
                 }
             }
@@ -229,7 +235,6 @@ namespace TestGame
 
         private bool AllBubblesIsNotMoving()
         {
-            Debug.Log($"bubblePresenters count {bubblePresenters.Count}");
             foreach (var bubblePresenter in bubblePresenters)
             {
                 if (bubblePresenter.IsIfMoving())
@@ -250,7 +255,7 @@ namespace TestGame
                 bubbleType = RandomEnumValue<BubbleType>();
             }
 
-            var bubble = new BubblePresenter(creator, _startingPositions.GetRandomValue(),bubbleType , this);
+            var bubble = new BubblePresenter(creator, _startingPositions.GetRandomValue(), bubbleType, this);
             bubble.ConnectToJoint(joint2D);
             bubblePresenters.Add(bubble);
         }
@@ -262,6 +267,12 @@ namespace TestGame
                 if (!bubblePresenters[i].HasView)
                     bubblePresenters.RemoveAt(i);
             }
+        }
+
+        public void Hide()
+        {
+            _cup.SetActive(false);
+            GameHide?.Invoke();
         }
     }
 }

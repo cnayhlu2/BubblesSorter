@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Pool;
 
 namespace TestGame
@@ -18,7 +17,9 @@ namespace TestGame
 
         public BubbleView CreateBubble()
         {
-            return _views.Get();
+            var view = _views.Get();
+            view.ParticleStopEventMediator.Reset();
+            return view;
         }
 
         public void ReleaseBubble(BubbleView view)

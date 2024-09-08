@@ -8,6 +8,7 @@ namespace TestGame
         void StartNewGame();
         event Action<int> GameScoreUpdated;
         event Action<int> GameStart;
+        event Action GameHide;
 
     }
 }

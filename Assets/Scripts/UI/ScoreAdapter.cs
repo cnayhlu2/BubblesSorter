@@ -15,12 +15,20 @@ namespace TestGame
         {
             gameController.GameScoreUpdated += OnGameScoreUpdated;
             gameController.GameStart += OnGameStart;
+            gameController.GameHide += OnGameHide;
+            view.gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
             gameController.GameScoreUpdated -= OnGameScoreUpdated;
             gameController.GameStart -= OnGameStart;
+            gameController.GameHide -= OnGameHide;
+        }
+
+        private void OnGameHide()
+        {
+            view.gameObject.SetActive(false);
         }
 
         [Button]
@@ -28,6 +36,7 @@ namespace TestGame
         {
             score = value;
             view.SetValue($"{value}");
+            view.gameObject.SetActive(true);
         }
 
         [Button]

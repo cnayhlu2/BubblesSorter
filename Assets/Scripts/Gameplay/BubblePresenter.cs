@@ -15,7 +15,8 @@ namespace TestGame
         private bool isMovingPrev;
 
         public bool HasView => view != null && view.Body.simulated;
-        private Color GetColor => bubbleType switch
+
+        public static Color GetColor(BubbleType bubbleType) => bubbleType switch
         {
             BubbleType.Blue => Color.blue,
             BubbleType.Green => Color.green,
@@ -34,7 +35,7 @@ namespace TestGame
             view.OnClick += OnBubbleClick;
             view.ParticleStopEventMediator.OnExplosionEffectStop += OnExplosionEffectStop;
             view.transform.position = position;
-            view.SetColor(GetColor);
+            view.SetColor(GetColor(type));
             view.gameObject.SetActive(true);
             isMovingPrev = true;
         }
@@ -61,6 +62,7 @@ namespace TestGame
         public void BoomBubble()
         {
             view.ShowBoom();
+            gameController.OnBubbleDestroy();
         }
 
         public void Remove()

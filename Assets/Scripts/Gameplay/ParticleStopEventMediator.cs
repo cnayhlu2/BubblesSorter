@@ -11,5 +11,10 @@ namespace TestGame
         {
             OnExplosionEffectStop?.Invoke();
         }
+
+        public void Reset()
+        {
+            OnExplosionEffectStop = null;
+        }
     }
 }
